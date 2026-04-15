@@ -1,0 +1,74 @@
+[
+    {
+      "name": "global_rank",
+      "type": "INTEGER",
+      "mode": "NULLABLE",
+      "description": "Ranking mundial global do canal baseado em inscritos"
+    },
+    {
+      "name": "search_country",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Região onde o canal estava nos trending topics"
+    },
+    {
+      "name": "country_code",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Código ISO 3166-1 alpha-2 do país de busca"
+    },
+    {
+      "name": "country_rank",
+      "type": "INTEGER",
+      "mode": "NULLABLE",
+      "description": "Ranking do canal dentro do país de busca"
+    },
+    {
+      "name": "channel_id",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Identificador único do canal no YouTube"
+    },
+    {
+      "name": "channel_name",
+      "type": "STRING",
+      "mode": "REQUIRED",
+      "description": "Nome de exibição do canal"
+    },
+    {
+      "name": "subscribers",
+      "type": "INTEGER",
+      "mode": "NULLABLE",
+      "description": "Número total de inscritos"
+    },
+    {
+      "name": "total_views",
+      "type": "INTEGER",
+      "mode": "NULLABLE",
+      "description": "Número acumulado de visualizações"
+    },
+    {
+      "name": "total_videos",
+      "type": "INTEGER",
+      "mode": "NULLABLE",
+      "description": "Total de vídeos públicos enviados"
+    },
+    {
+      "name": "country",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Localização física declarada pelo criador na aba Sobre"
+    },
+    {
+      "name": "description",
+      "type": "STRING",
+      "mode": "NULLABLE",
+      "description": "Texto da aba Sobre do canal"
+    },
+    {
+        "name": "ingestion_date",
+        "type": "DATE",
+        "mode": "REQUIRED",
+        "description": "Data de ingestão do dado na camada Gold para particionamento"
+    }
+  ]

@@ -1,0 +1,46 @@
+name: Deploy Terraform GCP
+
+# 1. Quando essa pipeline vai rodar?
+on:
+  push:
+    branches:
+      - dev   # Roda quando enviar código para a branch de desenvolvimento
+      - main  # Roda quando enviar código para a branch de produção
+    paths:
+      - 'terraform/**' # Só roda se os arquivos da pasta terraform forem alterados
+
+# 2. O que ela vai fazer?
+jobs:
+  terraform:
+    name: 'Terraform Plan and Apply'
+    runs-on: ubuntu-latest # O computador virtual do GitHub será um Linux Ubuntu
+    
+    # Passando nossas variáveis do Terraform automaticamente!
+    env:
+      TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
+      TF_VAR_repo_name: "youtube-etl-gcp" # Substitua pelo nome real do seu repositório
+      TF_VAR_branch: ${{ github.ref_name }} # Pega automaticamente se é 'dev' ou 'main'
+
+    steps:
+      - name: 📥 Clonar o Repositório
+        uses: actions/checkout@v3
+
+      - name: 🛠️ Instalar Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: 🔐 Autenticar no Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+      - name: 🚀 Terraform Init
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: 🔍 Terraform Plan
+        run: terraform plan
+        working-directory: ./terraform
+
+      - name: ✅ Terraform Apply
+        run: terraform apply -auto-approve
+        working-directory: ./terraform
