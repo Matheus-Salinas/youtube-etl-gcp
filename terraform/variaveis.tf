@@ -1,22 +1,22 @@
 variable "project_id" {
     description = "Identificador do meu projeto GCP"
-    type = "String"
+    type = string
 }
 
 variable "region" {
     description = "Região para projeto GCP"
-    type = "String"
+    type = string
     default = "us-central1"
 }
 
 variable "repo_name" {
     description = "Nome do repositorio no GitHub (ex: youtube-etl)"
-    type = "Stringt"
+    type = string
 }
 
 variable "branch" {
     description = "Nome da branch atual do GitHub (ex: dev, feature-1)"
-    type = "String"
+    type = string
     default = "dev"
 }
 
