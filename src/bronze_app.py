@@ -1,24 +1,25 @@
 from pyspark.sql.functions import col, current_date, lit, year, month, dayofmonth
 from spark import Spark
 from bucket import Bucket
+from datetime import datetime
 import logging
 
 class BronzeToSilver:
 
-    def __init(self, project_id, env_sufix):
+    def __init__(self, project_id, env_suffix):
 
         self.spark_manager = Spark(app_name="Youtube_Bronze_to_Silver")
         self.spark = self.spark_manager.get_session()
 
         self.bucket_manager = Bucket(self.spark)
 
-        self.bronze_bucket = f"gs://youtube-etl{env_sufix}-bronze-lake/"
-        self.silver_bucket = f"gs://youtube-etl{env_sufix}-silver-lake/"
+        self.bronze_bucket = f"youtube-etl-gcp{env_suffix}_bronze_lake/"
+        self.silver_bucket = f"youtube-etl-gcp{env_suffix}_silver_lake/"
 
 
     def process_global_data(self):
 
-        logging.info("Iniciando processamento dos dados Globais")
+        print("Iniciando processamento dos dados Globais")
 
         input_path = f"gs://{self.bronze_bucket}/raw/global_top4k.csv"
 
@@ -30,7 +31,7 @@ class BronzeToSilver:
             infer_schema=True            
         )
 
-        logging.info("Aplicando transformações e padronizando colunas")
+        print("Aplicando transformações e padronizando colunas")
 
         df_clean = df_raw.withColumnRenamed("Global Rank", "global_rank")\
                         .withColumnRenamed("Channel ID", "channel_id")\
@@ -43,27 +44,32 @@ class BronzeToSilver:
         
         df_final = df_clean.withColumn("ingestion_date", current_date())\
 
-        df_final = df_final.withColumn("year", year(col("ingestion_date"))) \
-                           .withColumn("month", month(col("ingestion_date"))) \
-                           .withColumn("day", dayofmonth(col("ingestion_date")))
-        
         dados_str = df_final._jdf.showString(5, 20, False)
-        logging.info(f"Visualização dos dados (Top 5):\n{dados_str}")
+        print(f"Visualização dos dados (Top 5):\n{dados_str}")
 
         schema_str = df_final._jdf.schema().treeString()
-        logging.info(f"Visualização do schema dos dados:\n{schema_str}")
+        print(f"Visualização do schema dos dados:\n{schema_str}")
 
-        outputh_path = f"gs://{self.silver_bucket}/global_channels/"
+        now = datetime.now()
+
+        year = now.strftime("%y")
+        month = now.strftime("%m")
+        day = now.strftime("%Y%m%d")
+
+        output_path = f"gs://{self.silver_bucket}/global_channels/Year/{year}/Month/{month}/{day}/"
 
         self.bucket_manager.write_bucket(
             df= df_final,
-            path=outputh_path,
+            path=output_path,
             format="parquet",
-            mode="append",
-            partition_cols=["year", "month", "day"]
+            mode="overwrite",
         )
 
-        logging.info("Processamento dos dados Globais concluído com sucesso!")
+        print("Processamento dos dados Globais concluído com sucesso!")
+
+if __name__ == "__main__":
+    etl = BronzeToSilver(project_id="youtube-etl-gcp-493418", env_suffix="-dev")
+    etl.process_global_data()
 
 
 

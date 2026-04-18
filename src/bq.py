@@ -11,7 +11,7 @@ class Bigquery:
         self.spark.config.set("materializationDataset", "temp_dataset")
 
     def write_to_bq(self, df, table_id, mode):
-        logging.info(f"Enviando dados para a tabela BigQuery: {table_id} no modo {mode}")
+        print(f"Enviando dados para a tabela BigQuery: {table_id} no modo {mode}")
 
         df.write.format("bigquery")\
             .option("temporaryGcsBucket", self.temp_gcs_bucket)\

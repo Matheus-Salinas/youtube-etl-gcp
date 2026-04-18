@@ -8,9 +8,12 @@ class Spark:
     
     def _create_spark_session(self):
         spark = (
-            SparkSession.builder.
-            appName(self.app_name).
-            getOrCreate()
+            SparkSession.builder
+            .appName(self.app_name)
+            .config("spark.jars.packages", "com.google.cloud.bigdataoss:gcs-connector:hadoop3-2.2.6")
+            .config("spark.hadoop.fs.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem")
+            .config("spark.hadoop.fs.AbstractFileSystem.gs.impl", "com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS")
+            .getOrCreate()
         )
         return spark
     
