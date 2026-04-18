@@ -4,22 +4,20 @@ name: Deploy Terraform GCP
 on:
   push:
     branches:
-      - dev   # Roda quando enviar código para a branch de desenvolvimento
-      - main  # Roda quando enviar código para a branch de produção
+      - dev   
+      - main 
     paths:
-      - 'terraform/**' # Só roda se os arquivos da pasta terraform forem alterados
-
+      - 'terraform/**' 
 # 2. O que ela vai fazer?
 jobs:
   terraform:
     name: 'Terraform Plan and Apply'
-    runs-on: ubuntu-latest # O computador virtual do GitHub será um Linux Ubuntu
+    runs-on: ubuntu-latest
     
-    # Passando nossas variáveis do Terraform automaticamente!
     env:
       TF_VAR_project_id: ${{ secrets.GCP_PROJECT_ID }}
-      TF_VAR_repo_name: "youtube-etl-gcp" # Substitua pelo nome real do seu repositório
-      TF_VAR_branch: ${{ github.ref_name }} # Pega automaticamente se é 'dev' ou 'main'
+      TF_VAR_repo_name: "youtube-etl-gcp" 
+      TF_VAR_branch: ${{ github.ref_name }}
 
     steps:
       - name: 📥 Clonar o Repositório
